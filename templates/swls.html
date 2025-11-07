@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}SWLS Questionnaire{% endblock %}
+
+{% block content %}
+<div class="questionnaire-container">
+    <div class="questionnaire-header">
+        <h2>😊 Satisfaction With Life Scale (SWLS)</h2>
+        <p class="subtitle">Please indicate how much you agree or disagree with each statement</p>
+        <div class="questionnaire-info">
+            <span class="info-badge">📝 5 Questions</span>
+            <span class="info-badge">⏱️ ~5 minutes</span>
+        </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('swls') }}" class="questionnaire-form" id="swlsForm">
+        {% for q_num, question_text in questions.items() %}
+        <div class="question-block">
+            <div class="question-number">Question {{ q_num }} of 5</div>
+            <div class="question-text">{{ question_text }}</div>
+            
+            <!-- RATING SCALE -->
+            <div class="rating-section">
+                <label class="section-label">Select your rating:</label>
+                <div class="rating-scale">
+                    {% for value, label in scale.items() %}
+                    <label class="rating-option">
+                        <input 
+                            type="radio" 
+                            name="q{{ q_num }}_rating" 
+                            value="{{ value }}" 
+                            required>
+                        <span class="rating-label">
+                            <span class="rating-value">{{ value }}</span>
+                            <span class="rating-text">{{ label }}</span>
+                        </span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- TEXT EXPLANATION -->
+            <div class="explanation-section">
+                <label for="q{{ q_num }}_explanation" class="section-label">
+                    Please explain why you chose this rating:
+                    <span class="required">*</span>
+                </label>
+                <textarea 
+                    id="q{{ q_num }}_explanation"
+                    name="q{{ q_num }}_explanation" 
+                    class="explanation-textarea" 
+                    rows="4" 
+                    placeholder="Write your explanation here... Please be specific about why you selected this rating."
+                    required></textarea>
+                <div class="char-counter" data-target="q{{ q_num }}_explanation">
+                    <span class="current-chars">0</span> characters
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- NAVIGATION BUTTONS -->
+        <div class="form-actions">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                ← Back to Dashboard
+            </a>
+            <button type="submit" class="btn btn-primary btn-large">
+                Submit SWLS Questionnaire ✓
+            </button>
+        </div>
+    </form>
+
+    <!-- HELP BOX -->
+    <div class="help-box">
+        <h4>💡 Tips for completing this questionnaire</h4>
+        <ul>
+            <li>Read each statement carefully before responding.</li>
+            <li>Be honest - there are no right or wrong answers.</li>
+            <li>In your explanations, feel free to mention specific life areas (work, relationships, health, etc.).</li>
+            <li>All questions require both a rating AND an explanation to submit.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+// Character counter for text areas
+document.addEventListener('DOMContentLoaded', function() {
+    const textareas = document.querySelectorAll('.explanation-textarea');
+    textareas.forEach(function(textarea) {
+        const counter = document.querySelector(`[data-target="${textarea.id}"] .current-chars`);
+        
+        textarea.addEventListener('input', function() {
+            counter.textContent = this.value.length;
+        });
+    });
+
+    // Confirm before leaving if form has data
+    let formModified = false;
+    const form = document.getElementById('swlsForm');
+    form.addEventListener('change', function() {
+        formModified = true;
+    });
+
+    window.addEventListener('beforeunload', function(e) {
+        if (formModified && !form.submitted) {
+            e.preventDefault();
+            e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+        }
+    });
+
+    form.addEventListener('submit', function() {
+        form.submitted = true;
+    });
+});
+</script>
+{% endblock %}

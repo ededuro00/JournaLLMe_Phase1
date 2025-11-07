@@ -1,0 +1,22 @@
+# ================================================================================
+# PYTHON DEPENDENCIES FOR QUESTIONNAIRE APP
+# ================================================================================
+# This file lists all the Python packages required to run the application.
+# Install all dependencies with: pip install -r requirements.txt
+
+# FLASK - The web framework that powers our application
+Flask==3.0.0
+
+# FLASK-SQLALCHEMY - Database ORM for easy database operations
+Flask-SQLAlchemy==3.1.1
+
+# WERKZEUG - Security utilities (password hashing, etc.)
+Werkzeug==3.0.1
+
+# These dependencies will be automatically installed with the above packages:
+# - SQLAlchemy: Database toolkit
+# - Jinja2: Template engine
+# - MarkupSafe: String handling
+# - itsdangerous: Security helpers
+# - click: Command line interface
+# - blinker: Signal support
