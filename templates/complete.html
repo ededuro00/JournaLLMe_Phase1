@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Questionnaire Completed{% endblock %}
+
+{% block content %}
+<div class="complete-container">
+    <div class="complete-box">
+        <div class="complete-icon">✅</div>
+        <h2>Thank You!</h2>
+        <p class="complete-message">
+            You have successfully completed the <strong>{{ questionnaire_name }}</strong> questionnaire.
+        </p>
+
+        <div class="complete-details">
+            <p>Your responses have been securely saved and will be used for research purposes only.</p>
+            <p>All data is kept confidential and anonymous.</p>
+        </div>
+
+        <div class="complete-actions">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-large">
+                Return to Dashboard
+            </a>
+        </div>
+
+        <div class="next-steps">
+            <h3>What's Next?</h3>
+            <p>
+                {% if questionnaire_name == 'SWLS' %}
+                    Please return to your dashboard to complete the PHQ-9 questionnaire if you haven't already.
+                {% elif questionnaire_name == 'PHQ-9' %}
+                    Please return to your dashboard to complete the SWLS questionnaire if you haven't already.
+                {% endif %}
+            </p>
+            <p>
+                If you've completed both questionnaires, you're all done! 
+                Thank you so much for your participation in this study.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
