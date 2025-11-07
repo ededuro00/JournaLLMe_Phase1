@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Questionnaire Study{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- NAVIGATION BAR -->
+    <!-- This appears at the top of every page -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>📋 Questionnaire Study</h1>
+            </div>
+            <div class="nav-links">
+                {% if session.get('user_id') %}
+                    <!-- Show these links only when user is logged in -->
+                    <span class="nav-user">Welcome, {{ session.get('username') }}</span>
+                    <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+                    <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+                {% else %}
+                    <!-- Show login link when not logged in -->
+                    <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- FLASH MESSAGES -->
+    <!-- These are temporary notifications (success, error, info messages) -->
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                            <button class="alert-close" onclick="this.parentElement.style.display='none'">×</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <!-- Each page will insert its content here using Jinja2 blocks -->
+    <main class="main-content">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Questionnaire Study. All responses are confidential.</p>
+            <p>If you have any questions, please contact the research team.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT (if needed in the future) -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
