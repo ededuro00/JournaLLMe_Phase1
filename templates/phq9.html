@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}PHQ-9 Questionnaire{% endblock %}
+
+{% block content %}
+<div class="questionnaire-container">
+    <div class="questionnaire-header">
+        <h2>🏥 Patient Health Questionnaire (PHQ-9)</h2>
+        <p class="subtitle">Over the <strong>last 2 weeks</strong>, how often have you been bothered by any of the following problems?</p>
+        <div class="questionnaire-info">
+            <span class="info-badge">📝 9 Questions</span>
+            <span class="info-badge">⏱️ ~7 minutes</span>
+        </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('phq9') }}" class="questionnaire-form" id="phq9Form">
+        {% for q_num, question_text in questions.items() %}
+        <div class="question-block">
+            <div class="question-number">Question {{ q_num }} of 9</div>
+            <div class="question-text">{{ question_text }}</div>
+            
+            <!-- RATING SCALE -->
+            <div class="rating-section">
+                <label class="section-label">How often in the last 2 weeks?</label>
+                <div class="rating-scale phq9-scale">
+                    {% for value, label in scale.items() %}
+                    <label class="rating-option">
+                        <input 
+                            type="radio" 
+                            name="q{{ q_num }}_rating" 
+                            value="{{ value }}" 
+                            required>
+                        <span class="rating-label">
+                            <span class="rating-value">{{ value }}</span>
+                            <span class="rating-text">{{ label }}</span>
+                        </span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- TEXT EXPLANATION -->
+            <div class="explanation-section">
+                <label for="q{{ q_num }}_explanation" class="section-label">
+                    Please explain your experience with this symptom:
+                    <span class="required">*</span>
+                </label>
+                <textarea 
+                    id="q{{ q_num }}_explanation"
+                    name="q{{ q_num }}_explanation" 
+                    class="explanation-textarea" 
+                    rows="4" 
+                    placeholder="Write your explanation here... Describe your experience or why you selected this frequency."
+                    required></textarea>
+                <div class="char-counter" data-target="q{{ q_num }}_explanation">
+                    <span class="current-chars">0</span> characters
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- NAVIGATION BUTTONS -->
+        <div class="form-actions">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                ← Back to Dashboard
+            </a>
+            <button type="submit" class="btn btn-primary btn-large">
+                Submit PHQ-9 Questionnaire ✓
+            </button>
+        </div>
+    </form>
+
+    <!-- IMPORTANT NOTICE -->
+    <div class="alert alert-info">
+        <h4>⚕️ Important Notice</h4>
+        <p>
+            This questionnaire is for research purposes only and is not a substitute for professional medical advice, 
+            diagnosis, or treatment. If you're experiencing severe symptoms or having thoughts of self-harm, 
+            please seek immediate help from a healthcare professional or call a crisis helpline.
+        </p>
+    </div>
+
+    <!-- HELP BOX -->
+    <div class="help-box">
+        <h4>💡 Tips for completing this questionnaire</h4>
+        <ul>
+            <li>Think about your experiences over the <strong>past 2 weeks</strong>.</li>
+            <li>Be as honest as possible - your responses are confidential.</li>
+            <li>In your explanations, you can describe specific situations or patterns you've noticed.</li>
+            <li>All questions require both a frequency rating AND an explanation.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+// Character counter for text areas
+document.addEventListener('DOMContentLoaded', function() {
+    const textareas = document.querySelectorAll('.explanation-textarea');
+    textareas.forEach(function(textarea) {
+        const counter = document.querySelector(`[data-target="${textarea.id}"] .current-chars`);
+        
+        textarea.addEventListener('input', function() {
+            counter.textContent = this.value.length;
+        });
+    });
+
+    // Confirm before leaving if form has data
+    let formModified = false;
+    const form = document.getElementById('phq9Form');
+    form.addEventListener('change', function() {
+        formModified = true;
+    });
+
+    window.addEventListener('beforeunload', function(e) {
+        if (formModified && !form.submitted) {
+            e.preventDefault();
+            e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+        }
+    });
+
+    form.addEventListener('submit', function() {
+        form.submitted = true;
+    });
+});
+</script>
+{% endblock %}
